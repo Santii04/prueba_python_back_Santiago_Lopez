@@ -13,19 +13,28 @@ class JsonPlaceHolder:
                 response = await client.get(f"{settings.API_BASE_URL}/users/{user_id}")
                 self.last_user_id = user_id
                 response.raise_for_status()
+                logger.info(f"Success fetching user with id: {user_id}")
                 return response.json()
-        except Exception as e:
+        except httpx.HTTPError as e:
             logger.error(f"Service error!: {__name__}. Error fetching user with id: {user_id}: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error in {__name__}: {str(e)}")
             raise
         
     async def get_user_posts(self):
         if not self.last_user_id:
+            logger.error(f"Service error!: {__name__}. First fetch a user using /users/user_id")
             raise ValueError("No user has been fetched")
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{settings.API_BASE_URL}/posts", params={"userId": self.last_user_id})
                 response.raise_for_status()
+                logger.info(f"Success fetching posts for user: {self.last_user_id}")
                 return response.json()
-        except Exception as e:
+        except httpx.HTTPError as e:
             logger.error(f"Service error!: {__name__}. Error fetching posts for user {self.last_user_id}: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error in {__name__}: {str(e)}")
             raise
