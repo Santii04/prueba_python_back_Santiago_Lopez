@@ -6,7 +6,16 @@ if not os.path.exists('logs'):
     os.makedirs('logs')
 
 def setup_logger():
-    
+    """
+    Configures and initializes the application logger.
+
+    The logger writes logs to a file located in the 'logs' directory, with the filename containing 
+    the current date. It also displays logs in the console. Both outputs share a consistent format 
+    that includes timestamps, module names, log levels, and messages.
+
+    Returns:
+        Logger: Configured logger instance.
+    """
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     

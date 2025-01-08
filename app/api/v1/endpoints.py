@@ -10,6 +10,14 @@ router = APIRouter()
 
 @router.get("/users/{user_id}")
 async def get_user(user_id: int):
+    """Fetch an user using the id provided
+
+    Args:
+        user_id (int): User id to be fetch
+
+    Returns:
+       The user data in a dict or raise by the errors
+    """
     try:
         user_data = await service.get_user(user_id)
         return {**user_data, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
@@ -25,9 +33,17 @@ async def get_user(user_id: int):
         )
 
 @router.get("/posts")
-async def get_user_posts():
+async def get_user_posts(user_id: int = None):
+    """Fetch the user posts using optionally a provided user id
+
+    Args:
+        user_id (int, optional): User id to fetch respectively posts. Defaults to None.
+
+    Returns:
+        The user posts in a dict or raise by the errors
+    """
     try:
-        posts = await service.get_user_posts()
+        posts = await service.get_user_posts(user_id)
         return {"User Posts": posts, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     except ValueError as e:
         raise HTTPException(
